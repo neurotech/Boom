@@ -1,8 +1,19 @@
 -- Thanks to:
 -- https://wow.gamepedia.com/API_CombatLogGetCurrentEventInfo
 
+local BOOM_ACTIVE = true
 local playerGUID = UnitGUID("player")
 local MSG_CRITICAL_HIT = "#YOLO [ %s - %d ]"
+
+-- enableBoom()
+function enableBoom()
+	-- TODO
+end
+
+-- disableBoom()
+function disableBoom()
+	-- TODO
+end
 
 local f = CreateFrame("Frame")
 f:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
@@ -29,4 +40,16 @@ function f:OnEvent(event, ...)
 		-- Yell it:
 		-- SendChatMessage(MSG_CRITICAL_HIT:format(action, amount) ,"YELL");
 	end
+end
+
+-- Slash command to toggle Boom
+SLASH_BOOMTOGGLE = '/boom';
+function SlashCmdList.BOOMTOGGLE(msg, editbox)
+	BOOM_ACTIVE = not BOOM_ACTIVE
+	if BOOM_ACTIVE then
+		-- Call Enable()
+	else
+		-- Call Disable()
+	end
+	print("Hello, World! "..BOOM_ACTIVE);
 end
