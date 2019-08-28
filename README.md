@@ -1,4 +1,4 @@
-# boom
+# Boom
 
 Keep everyone informed of your critical hits.
 
