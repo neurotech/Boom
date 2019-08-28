@@ -1,0 +1,7 @@
+## Title: Boom
+## Interface: 11302
+## Notes: Keep everyone informed of your critical hits.
+## Author: neurotech
+## Version: 1.0.0
+
+Boom.lua
