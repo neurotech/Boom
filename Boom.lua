@@ -1,10 +1,12 @@
+-- Thanks to:
+-- https://wow.gamepedia.com/API_CombatLogGetCurrentEventInfo
+
 local playerGUID = UnitGUID("player")
-local MSG_CRITICAL_HIT = "Your %s critically hit %s for %d damage!"
+local MSG_CRITICAL_HIT = "#YOLO [ %s - %d ]"
 
 local f = CreateFrame("Frame")
 f:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 f:SetScript("OnEvent", function(self, event)
-	-- pass a variable number of arguments
 	self:OnEvent(event, CombatLogGetCurrentEventInfo())
 end)
 
@@ -21,10 +23,10 @@ function f:OnEvent(event, ...)
 	
 	if critical and sourceGUID == playerGUID then
 		local action = spellId and GetSpellLink(spellId) or "melee swing"
-		print(MSG_CRITICAL_HIT:format(action, destName, amount))
+		print(MSG_CRITICAL_HIT:format(action, amount))
 		-- Say it:
-		-- SendChatMessage(MSG_CRITICAL_HIT:format(action, destName, amount) ,"SAY");
+		-- SendChatMessage(MSG_CRITICAL_HIT:format(action, amount) ,"SAY");
 		-- Yell it:
-		-- SendChatMessage(MSG_CRITICAL_HIT:format(action, destName, amount) ,"YELL");
+		-- SendChatMessage(MSG_CRITICAL_HIT:format(action, amount) ,"YELL");
 	end
 end
