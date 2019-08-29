@@ -5,7 +5,10 @@
 -- toggleBoom(active) function? (if active, run enable logic, else run disable logic)
 -- Threshold value via /boom n
 
-local BOOM_ACTIVE = false
+if BOOM_ACTIVE == nil then
+	BOOM_ACTIVE = true
+end
+
 local BOOM_THRESHOLD = 20
 local BOOM_CHANNEL = "YELL"
 

@@ -3,5 +3,6 @@
 ## Notes: Keep everyone informed of your critical hits.
 ## Author: neurotech
 ## Version: 1.0.0
+## SavedVariables: BOOM_ACTIVE
 
 Boom.lua
