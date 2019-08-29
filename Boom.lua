@@ -1,17 +1,8 @@
--- Thanks to:
--- https://wow.gamepedia.com/API_CombatLogGetCurrentEventInfo
-
--- TODO/IDEAS
--- toggleBoom(active) function? (if active, run enable logic, else run disable logic)
--- Threshold value via /boom n
-
 if BOOM_ACTIVE == nil then
 	BOOM_ACTIVE = true
 end
 
-local BOOM_THRESHOLD = 20
 local BOOM_CHANNEL = "YELL"
-
 local playerGUID = UnitGUID("player")
 local MSG_CRITICAL_HIT = "#YOLO [ %s - %d ]"
 

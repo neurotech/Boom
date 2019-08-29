@@ -2,6 +2,12 @@
 
 Keep everyone informed of your critical hits.
 
+## Credits
+
+Thanks to https://wow.gamepedia.com/API_CombatLogGetCurrentEventInfo for the original implementation.
+
+---
+
 ## TODO
 
 ```lua
