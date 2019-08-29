@@ -1,17 +1,14 @@
 if BOOM_ACTIVE == nil then
 	BOOM_ACTIVE = true
 end
-
 local BOOM_CHANNEL = "YELL"
 local playerGUID = UnitGUID("player")
 local MSG_CRITICAL_HIT = "#YOLO [ %s - %d ]"
-
 local f = CreateFrame("Frame")
 
 function logStatus()
 	if BOOM_ACTIVE then
 		print("|cFFFFFF00Boom is |cFF00FF00on|r.");
-		print("|cFF4EC6E0Boom!|r.");
 	else
 		print("|cFFFFFF00Boom is |cFFFF0000off|r.");
 	end
@@ -43,7 +40,6 @@ function toggleBoom(state)
 			
 			if critical and sourceGUID == playerGUID then
 				if spellName then
-					-- Chat:
 					SendChatMessage(MSG_CRITICAL_HIT:format(spellName, amount), BOOM_CHANNEL)
 				end
 			end
