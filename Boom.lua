@@ -48,12 +48,12 @@ function toggleBoom(state)
 	if state then
 		BOOM_ACTIVE = false
 		disableBoom()
-		logStatus()
 	else
 		BOOM_ACTIVE = true
 		enableBoom()
-		logStatus()
 	end
+	
+	logStatus()
 end
 
 SLASH_BOOMTOGGLE1 = "/boom"
