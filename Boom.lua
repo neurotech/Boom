@@ -1,10 +1,11 @@
+local f = CreateFrame("Frame")
+
 if BOOM_ACTIVE == nil then
 	BOOM_ACTIVE = true
 end
 local BOOM_CHANNEL = "YELL"
 local playerGUID = UnitGUID("player")
 local MSG_CRITICAL_HIT = "#YOLO [ %s - %d ]"
-local f = CreateFrame("Frame")
 
 function logStatus()
 	if BOOM_ACTIVE then
@@ -14,14 +15,7 @@ function logStatus()
 	end
 end
 
-function toggleBoom(state)
-	if state then
-		BOOM_ACTIVE = false
-		f:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-		logStatus()
-	else
-		BOOM_ACTIVE = true
-		logStatus()
+function enableBoom()
 		f:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 		f:SetScript("OnEvent", function(self, event)
 			self:OnEvent(event, CombatLogGetCurrentEventInfo())
@@ -44,6 +38,21 @@ function toggleBoom(state)
 				end
 			end
 		end
+end
+
+function disableBoom()
+	f:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+end
+
+function toggleBoom(state)
+	if state then
+		BOOM_ACTIVE = false
+		disableBoom()
+		logStatus()
+	else
+		BOOM_ACTIVE = true
+		enableBoom()
+		logStatus()
 	end
 end
 
@@ -53,4 +62,9 @@ SlashCmdList["BOOMTOGGLE"] = function(msg, editBox)
 end
 
 print("|cFFFFFF00Boom loaded!|r")
-toggleBoom(BOOM_ACTIVE)
+
+if BOOM_ACTIVE then
+	enableBoom()
+end
+
+logStatus()
