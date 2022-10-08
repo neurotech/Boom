@@ -4,7 +4,7 @@ if BOOM_ACTIVE == nil then
 	BOOM_ACTIVE = true
 end
 
-local BOOM_CHANNEL = "YELL"
+local BOOM_CHANNEL = "EMOTE"
 local playerGUID = UnitGUID("player")
 local MSG_CRITICAL_HIT = "#YOLO [ %s - %d ]"
 
