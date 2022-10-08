@@ -1,8 +1,13 @@
-## Title: Boom
-## Interface: 11302
+## Interface: 90205
+## Interface-Classic: 11403
+## Interface-BCC: 20504
+## Interface-Wrath: 30400
+## Title: |cffe61f00B|r|cffff3819o|r|cffff4e33o|r|cffff644dm|r
 ## Notes: Keep everyone informed of your critical hits.
 ## Author: neurotech
-## Version: 1.0.0
+## Version: @project-version@
+## DefaultState: Enabled
+## LoadOnDemand: 0
 ## SavedVariables: BOOM_ACTIVE
 
 Boom.lua
