@@ -30,7 +30,7 @@ local function enableBoom()
 
 		if subevent == "SWING_DAMAGE" then
 			amount, overkill, school, resisted, blocked, absorbed, critical, glancing, crushing, isOffHand = select(12, ...)
-		elseif subevent == "SPELL_DAMAGE" then
+		elseif subevent == "SPELL_DAMAGE" or subevent == "SPELL_PERIODIC_DAMAGE" then
 			spellId, spellName, spellSchool, amount, overkill, school, resisted, blocked, absorbed, critical, glancing, crushing,
 					isOffHand = select(12, ...)
 		end
