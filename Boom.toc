@@ -1,7 +1,5 @@
-## Interface: 90205
-## Interface-Classic: 11403
-## Interface-BCC: 20504
-## Interface-Wrath: 30400
+## Interface: 110100, 11506, 20504, 30403, 40402, 50500
+## X-Curse-Project-ID: 1275783
 ## Title: |cffe61f00B|r|cffff3819o|r|cffff4e33o|r|cffff644dm|r
 ## Notes: Keep everyone informed of your critical hits.
 ## Author: neurotech
@@ -9,5 +7,6 @@
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
 ## SavedVariables: BOOM_ACTIVE
+## IconTexture: Interface\Icons\Inv_misc_bomb_04
 
 Boom.lua
