@@ -1,17 +1,27 @@
-echo "Building Boom and installing to WoW directory."
+export CLASSIC_PATH="/mnt/c/Program Files (x86)/World of Warcraft/_classic_/Interface/AddOns/Boom"
+export RETAIL_PATH="/mnt/c/Program Files (x86)/World of Warcraft/_retail_/Interface/AddOns/Boom"
 
-touch Boom.toc.tmp
+directories=(
+    "$CLASSIC_PATH"
+    "$RETAIL_PATH"
+)
 
-cat Boom.toc > Boom.toc.tmp
+echo "Building Boom and installing to WoW directories."
 
-sed -i "s/@project-version@/$(git describe --abbrev=0)/g" Boom.toc.tmp
+for dir in "${directories[@]}"; do
+  touch Boom.toc.tmp
 
-mkdir -p /h/games/World\ of\ Warcraft/_classic_/Interface/AddOns/Boom/
+  cat Boom.toc > Boom.toc.tmp
 
-cp *.lua *.ogg /h/games/World\ of\ Warcraft/_classic_/Interface/AddOns/Boom/
+  sed -i "s/@project-version@/$(git describe --abbrev=0)/g" Boom.toc.tmp
 
-cp Boom.toc.tmp /h/games/World\ of\ Warcraft/_classic_/Interface/AddOns/Boom/Boom.toc
+  mkdir -p "$dir"
 
-rm Boom.toc.tmp
+  cp -r *.lua *.ogg "$dir"
+
+  cp Boom.toc.tmp "$dir"/Boom.toc
+
+  rm Boom.toc.tmp
+done
 
 echo "Complete."
