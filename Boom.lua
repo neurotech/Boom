@@ -49,8 +49,6 @@ local getTargetName = function(fullName)
 end
 
 local function enableBoom()
-	print("Boom listening to events...")
-
 	BoomFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 
 	BoomFrame:SetScript("OnEvent", function(self, event)
@@ -92,7 +90,6 @@ local function enableBoom()
 end
 
 local function disableBoom()
-	print("Boom no longer listening to events...")
 	BoomFrame:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 end
 
