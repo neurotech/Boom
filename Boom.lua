@@ -1,60 +1,108 @@
 local BoomFrame = CreateFrame("Frame")
-
-if BOOM_ACTIVE == nil then
-	BOOM_ACTIVE = true
-end
+local playerGUID = UnitGUID("player")
+local playerName = UnitName("player")
 
 local BOOM_CHANNEL = "EMOTE"
-local playerGUID = UnitGUID("player")
-local MSG_CRITICAL_HIT = "#YOLO [ %s - %d ]"
+local MSG_CRITICAL_HIT = "#YOLO [ %s - %s ] on %s!"
+local MSG_BOOM_LOG = "|cffffde99[|r|cffe61f00B|r|cffff3819o|r|cffff4e33o|r|cffff644dm|r|cffffde99]|r is %s."
+local BoomCooldown = 0
 
 local function logStatus()
 	if BOOM_ACTIVE then
-		print("|cFFFFFF00Boom is |cFF00FF00on|r.");
+		print(MSG_BOOM_LOG:format("|cFF00FF00on|r"))
 	else
-		print("|cFFFFFF00Boom is |cFFFF0000off|r.");
+		print(MSG_BOOM_LOG:format("|cFFFF0000off|r"))
 	end
 end
 
+local function formatWithCommas(number)
+	-- Convert the number to a string
+	local str = tostring(number)
+
+	-- Handle the integer and fractional parts separately
+	local integerPart, fractionalPart = str:match("([^%.]+)%.?(.*)")
+
+	-- Format the integer part with commas
+	local formattedInteger = integerPart:reverse():gsub("(%d%d%d)", "%1,"):reverse()
+
+	-- Remove any leading comma (if the number of digits is a multiple of 3)
+	if formattedInteger:sub(1, 1) == "," then
+		formattedInteger = formattedInteger:sub(2)
+	end
+
+	-- Recombine the formatted integer part with the fractional part
+	if fractionalPart and fractionalPart ~= "" then
+		return formattedInteger .. "." .. fractionalPart
+	else
+		return formattedInteger
+	end
+end
+
+local getTargetName = function(fullName)
+	local targetName = fullName
+
+	if fullName then
+		targetName = Ambiguate(fullName, "short")
+	end
+
+	return targetName
+end
+
 local function enableBoom()
+	print("Boom listening to events...")
+
 	BoomFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 
 	BoomFrame:SetScript("OnEvent", function(self, event)
 		self:OnEvent(event, CombatLogGetCurrentEventInfo())
 	end)
 
-	function BoomFrame:OnEvent(event, ...)
-		local timestamp, subevent, _, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags = ...
-		local spellId, spellName, spellSchool
-		local amount, overkill, school, resisted, blocked, absorbed, critical, glancing, crushing, isOffHand
+	function BoomFrame:OnEvent(_, ...)
+		local _, subevent, _, sourceGUID, _, _, _, _, _, _, _ = ...
+		local spellName, amount, critical, target
 
-		if subevent == "SWING_DAMAGE" then
-			amount, overkill, school, resisted, blocked, absorbed, critical, glancing, crushing, isOffHand = select(12, ...)
-		elseif subevent == "SPELL_DAMAGE" or subevent == "SPELL_PERIODIC_DAMAGE" then
-			spellId, spellName, spellSchool, amount, overkill, school, resisted, blocked, absorbed, critical, glancing, crushing,
-					isOffHand = select(12, ...)
+		if subevent == "SPELL_HEAL" or subevent == "SPELL_PERIODIC_HEAL" then
+			_, spellName, _, amount, _, _, critical, _ = select(12, ...)
+			target = getTargetName(select(9, ...))
 		end
 
-		if critical and sourceGUID == playerGUID then
+		if subevent == "SWING_DAMAGE" then
+			amount, _, _, _, _, _, critical, _, _, _ = select(12, ...)
+		elseif subevent == "SPELL_DAMAGE" or subevent == "SPELL_PERIODIC_DAMAGE" then
+			_, spellName, _, amount, _, _, _, _, _, critical, _, _, _ = select(12, ...)
+			target = getTargetName(select(9, ...))
+		end
+
+		if critical and sourceGUID == playerGUID and target ~= playerName then
 			if spellName then
-				PlaySoundFile([[Interface\Addons\Boom\bam.ogg]])
-				SendChatMessage(MSG_CRITICAL_HIT:format(spellName, amount), BOOM_CHANNEL)
+				if BoomCooldown == 0 then
+					local formattedAmount = formatWithCommas(amount)
+					BoomCooldown = 5
+
+					PlaySoundFile([[Interface\Addons\Boom\bam.ogg]])
+					SendChatMessage(MSG_CRITICAL_HIT:format(spellName, formattedAmount, target), BOOM_CHANNEL)
+
+					C_Timer.After(BoomCooldown, function()
+						BoomCooldown = 0
+					end)
+				end
 			end
 		end
 	end
 end
 
 local function disableBoom()
+	print("Boom no longer listening to events...")
 	BoomFrame:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 end
 
-local function toggleBoom(state)
-	if state then
-		BOOM_ACTIVE = false
-		disableBoom()
-	else
-		BOOM_ACTIVE = true
+local function toggleBoom()
+	BOOM_ACTIVE = not BOOM_ACTIVE
+
+	if BOOM_ACTIVE then
 		enableBoom()
+	else
+		disableBoom()
 	end
 
 	logStatus()
@@ -63,13 +111,31 @@ end
 SLASH_BOOMTOGGLE1 = "/boom"
 
 SlashCmdList["BOOMTOGGLE"] = function(msg, editBox)
-	toggleBoom(BOOM_ACTIVE)
+	toggleBoom()
 end
 
-print("|cFFFFFF00Boom loaded!|r")
+local loadingEvents = CreateFrame("Frame")
+loadingEvents:RegisterEvent("ADDON_LOADED")
+loadingEvents:RegisterEvent("PLAYER_ENTERING_WORLD")
 
-if BOOM_ACTIVE then
-	enableBoom()
-end
+loadingEvents:SetScript(
+	"OnEvent",
+	function(_, event, arg1)
+		if event == "ADDON_LOADED" and arg1 == "Boom" then
+			if BOOM_ACTIVE == nil then
+				BOOM_ACTIVE = false
+			end
 
-logStatus()
+			loadingEvents:UnregisterEvent("ADDON_LOADED")
+		end
+
+		if event == "PLAYER_ENTERING_WORLD" then
+			if BOOM_ACTIVE then
+				enableBoom()
+			end
+
+			logStatus()
+			loadingEvents:UnregisterEvent("PLAYER_ENTERING_WORLD")
+		end
+	end
+)
