@@ -1,0 +1,7 @@
+ignore:
+  - "*.yml"
+  - "dev.sh"
+  - "package.json"
+  - ".vscode"
+  - ".github"
+  - "*.psd"
