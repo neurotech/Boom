@@ -1,4 +1,4 @@
-## Interface: 110100, 11506, 20504, 30403, 40402, 50500
+## Interface: 110105, 11507, 20504, 30403, 40402, 50500
 ## X-Curse-Project-ID: 1275783
 ## Title: |cffe61f00B|r|cffff3819o|r|cffff4e33o|r|cffff644dm|r
 ## Notes: Keep everyone informed of your critical hits.
