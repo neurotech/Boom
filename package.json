@@ -1,6 +1,6 @@
 {
   "name": "boom",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Keep everyone informed of your critical hits.",
   "main": "Boom.lua",
   "repository": {
