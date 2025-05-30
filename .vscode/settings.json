@@ -17,6 +17,10 @@
   "Lua.diagnostics.globals": [
     "love",
     "SlashCmdList",
-    "GetUnitName"
+    "GetUnitName",
+    "Settings",
+    "BOOM_ACTIVE",
+    "BOOM_CONFIG",
+    "MinimalSliderWithSteppersMixin"
   ]
 }

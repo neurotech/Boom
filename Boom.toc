@@ -6,7 +6,8 @@
 ## Version: @project-version@
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
-## SavedVariables: BOOM_ACTIVE
+## SavedVariables: BOOM_ACTIVE, BOOM_CONFIG
 ## IconTexture: Interface\Icons\Inv_misc_bomb_04
 
 Boom.lua
+Boom_Config.lua

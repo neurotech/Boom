@@ -11,3 +11,7 @@ When Boom is on, you will automatically `/emote` a message informing anyone near
 * The original *BaM Mod*
 * https://warcraft.wiki.gg/wiki/API_CombatLogGetCurrentEventInfo for the original implementation.
 * Cover image from https://www.flickr.com/photos/37413900@N04/11971929595
+
+## TODO
+
+* Custom message templates

@@ -1,14 +1,16 @@
+Boom = {};
+
+Boom.BoomTextColour = "|cffe61f00B|r|cffff3819o|r|cffff4e33o|r|cffff644dm|r"
+
 local BoomFrame = CreateFrame("Frame")
 local playerGUID = UnitGUID("player")
 local playerName = UnitName("player")
 
-local BOOM_CHANNEL = "EMOTE"
-local MSG_CRITICAL_HIT = "#YOLO [ %s - %s ] on %s!"
-local MSG_BOOM_LOG = "|cffffde99[|r|cffe61f00B|r|cffff3819o|r|cffff4e33o|r|cffff644dm|r|cffffde99]|r is %s."
-local BoomCooldown = 0
+local MSG_BOOM_LOG = "|cffffde99[|r" .. Boom.BoomTextColour .. "|cffffde99]|r is %s."
+local cooldown = 0
 
-local function logStatus()
-	if BOOM_ACTIVE then
+function Boom.logStatus()
+	if BOOM_CONFIG.active then
 		print(MSG_BOOM_LOG:format("|cFF00FF00on|r"))
 	else
 		print(MSG_BOOM_LOG:format("|cFFFF0000off|r"))
@@ -48,7 +50,7 @@ local getTargetName = function(fullName)
 	return targetName
 end
 
-local function enableBoom()
+function Boom.enableBoom()
 	BoomFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 
 	BoomFrame:SetScript("OnEvent", function(self, event)
@@ -73,15 +75,23 @@ local function enableBoom()
 
 		if critical and sourceGUID == playerGUID and target ~= playerName then
 			if spellName then
-				if BoomCooldown == 0 then
+				if cooldown == 0 then
 					local formattedAmount = formatWithCommas(amount)
-					BoomCooldown = 5
+					local message         = BOOM_CONFIG.messageTemplate:format(spellName, formattedAmount, target)
+					cooldown              = BOOM_CONFIG.cooldown
 
-					PlaySoundFile([[Interface\Addons\Boom\bam.ogg]])
-					SendChatMessage(MSG_CRITICAL_HIT:format(spellName, formattedAmount, target), BOOM_CHANNEL)
+					if BOOM_CONFIG.playSound then
+						PlaySoundFile("Interface\\Addons\\Boom\\bam.ogg")
+					end
 
-					C_Timer.After(BoomCooldown, function()
-						BoomCooldown = 0
+					if BOOM_CONFIG.localOnly then
+						print(message)
+					else
+						SendChatMessage(message, "EMOTE")
+					end
+
+					C_Timer.After(cooldown, function()
+						cooldown = 0
 					end)
 				end
 			end
@@ -89,25 +99,25 @@ local function enableBoom()
 	end
 end
 
-local function disableBoom()
+function Boom.disableBoom()
 	BoomFrame:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 end
 
 local function toggleBoom()
-	BOOM_ACTIVE = not BOOM_ACTIVE
+	BOOM_CONFIG.active = not BOOM_CONFIG.active
 
-	if BOOM_ACTIVE then
-		enableBoom()
+	if BOOM_CONFIG.active then
+		Boom.enableBoom()
 	else
-		disableBoom()
+		Boom.disableBoom()
 	end
 
-	logStatus()
+	Boom.logStatus()
 end
 
 SLASH_BOOMTOGGLE1 = "/boom"
 
-SlashCmdList["BOOMTOGGLE"] = function(msg, editBox)
+SlashCmdList["BOOMTOGGLE"] = function()
 	toggleBoom()
 end
 
@@ -119,19 +129,18 @@ loadingEvents:SetScript(
 	"OnEvent",
 	function(_, event, arg1)
 		if event == "ADDON_LOADED" and arg1 == "Boom" then
-			if BOOM_ACTIVE == nil then
-				BOOM_ACTIVE = false
-			end
-
+			Boom.InitialiseConfig()
 			loadingEvents:UnregisterEvent("ADDON_LOADED")
 		end
 
 		if event == "PLAYER_ENTERING_WORLD" then
-			if BOOM_ACTIVE then
-				enableBoom()
+			if BOOM_CONFIG.active then
+				Boom.enableBoom()
 			end
 
-			logStatus()
+			Boom.logStatus()
+
+
 			loadingEvents:UnregisterEvent("PLAYER_ENTERING_WORLD")
 		end
 	end
